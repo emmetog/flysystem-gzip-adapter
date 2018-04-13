@@ -12,11 +12,11 @@
   "prefer-stable": true,
   "require": {
     "php": "^7.0",
-    "league/flysystem": "^1.0"
+    "league/flysystem": "~1.0"
   },
   "autoload": {
     "psr-4": {
-      "GzipAdapter\\": "src/"
+      "FlysystemGzipAdapter\\": "src/"
     }
   }
 }

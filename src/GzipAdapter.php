@@ -1,10 +1,10 @@
 <?php
-namespace GzipAdapter;
+namespace FlysystemGzipAdapter;
 
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
 
-class Gzip implements AdapterInterface
+class GzipAdapter implements AdapterInterface
 {
   // Variables
   private $adapter;
@@ -42,7 +42,7 @@ class Gzip implements AdapterInterface
     $readContents = $read['contents'];
     
     // Create a new stream with the decoded contents
-    $stream = fopen("php://temp","wb");
+    $stream = fopen("php://temp","w+b");
     fwrite($stream,$readContents);
     rewind($stream);
     
@@ -93,6 +93,10 @@ class Gzip implements AdapterInterface
     // Encode the contents
     $writeContents = gzencode($contents,$config->get('compression',-1));
     
+    // Write the meta string
+    $metaString = Meta::write($path,$contents);
+    $this->adapter->write($metaPath,$metaString,$config);
+    
     // Write the contents to the adapter
     return $this->adapter->write($path,$writeContents,$config);
   }
@@ -110,21 +114,13 @@ class Gzip implements AdapterInterface
   // Update a file
   public function update($path, $contents, Config $config)
   {
-    // Encode the contents
-    $writeContents = gzencode($contents,$config->get('compression',-1));
-    
-    // Update the contents to the adapter
-    return $this->adapter->update($path,$writeContents,$config);
+    return $this->write($path,$contents,$config);
   }
 
   // Update a file using a stream
   public function updateStream($path, $resource, Config $config)
   {
-    // Read the contents of the stream
-    $writeContents = stream_get_contents($resource);
-    
-    // Encode the contents and update them to the adapter
-    return $this->update($path,$writeContents,$config);
+    return $this->writeStream($path,$resource,$config);
   }
 
   // Rename a file
@@ -158,7 +154,7 @@ class Gzip implements AdapterInterface
   }
   
   // Set the visibility for a file
-  public function setVisibility($path,$visibility)
+  public function setVisibility($path, $visibility)
   {
     $this->adapter->setVisibility($path,$visibility);
   }
