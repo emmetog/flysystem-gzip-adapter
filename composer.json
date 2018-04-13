@@ -1,0 +1,22 @@
+{
+  "name": "dengsn/flysystem-gzip-adapter",
+  "description": "Gzip wrapper for Flysystem instances",
+  "authors": [
+    {
+      "name": "dengsn",
+      "email": "info@dengsn.com"
+    }
+  ],
+  "license": "GPL-3.0+",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": "^7.0",
+    "league/flysystem": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "GzipAdapter\\": "src/"
+    }
+  }
+}

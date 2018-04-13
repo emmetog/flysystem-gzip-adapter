@@ -1,0 +1,9 @@
+# Ignores for Composer
+composer.phar
+/vendor/
+
+# Ignores for NetBeans
+/nbproject/
+
+# Ignores for the project
+/index.php
