@@ -24,13 +24,29 @@ class Gzip implements AdapterInterface
   // Read a file
   public function read($path)
   {
-    // TODO: Implement read
+    // Read the file from the adapter
+    $read = $this->adapter->read($path);
+    $readContents = $read['contents'];
+    
+    // Decode the contents
+    $contents = gzdecode($readContents);
+    
+    return ['type' => 'file', 'path' => $path, 'contents' => $contents];
   }
 
   // Read a file as a stream
   public function readStream($path)
   {
-    // TODO: Implement stream
+    // Read the contents from the adapter and decode them
+    $read = $this->read($path);
+    $readContents = $read['contents'];
+    
+    // Create a new stream with the decoded contents
+    $stream = fopen("php://temp","wb");
+    fwrite($stream,$readContents);
+    rewind($stream);
+    
+    return ['type' => 'file', 'path' => $path, 'stream' => $stream];
   }
   
   // List contents of a directory
@@ -49,12 +65,14 @@ class Gzip implements AdapterInterface
   public function getSize($path)
   {
     // TODO: Implement getSize
+    return $this->adapter->getSize($path);
   }
 
   // Get the mimetype of a file
   public function getMimetype($path)
   {
     // TODO: Implement getMimetype
+    return $this->adapter->getMimetype($path);
   }
 
   // Get the last modified time of a file as a timestamp
@@ -72,25 +90,41 @@ class Gzip implements AdapterInterface
   // Write a new file
   public function write($path, $contents, Config $config)
   {
-    // TODO: Implement write
+    // Encode the contents
+    $writeContents = gzencode($contents,$config->get('compression',-1));
+    
+    // Write the contents to the adapter
+    return $this->adapter->write($path,$writeContents,$config);
   }
 
   // Write a new file using a stream
   public function writeStream($path, $resource, Config $config)
   {
-    // TODO: Implement writeStream
+    // Read the contents of the stream
+    $writeContents = stream_get_contents($resource);
+    
+    // Encode the contents and write them to the adapter
+    return $this->write($path,$writeContents,$config);
   }
   
   // Update a file
   public function update($path, $contents, Config $config)
   {
-    // TODO: Implement update
+    // Encode the contents
+    $writeContents = gzencode($contents,$config->get('compression',-1));
+    
+    // Update the contents to the adapter
+    return $this->adapter->update($path,$writeContents,$config);
   }
 
   // Update a file using a stream
   public function updateStream($path, $resource, Config $config)
   {
-    // TODO: Implement updateStream
+    // Read the contents of the stream
+    $writeContents = stream_get_contents($resource);
+    
+    // Encode the contents and update them to the adapter
+    return $this->update($path,$writeContents,$config);
   }
 
   // Rename a file
