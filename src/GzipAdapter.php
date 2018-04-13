@@ -93,10 +93,6 @@ class GzipAdapter implements AdapterInterface
     // Encode the contents
     $writeContents = gzencode($contents,$config->get('compression',-1));
     
-    // Write the meta string
-    $metaString = Meta::write($path,$contents);
-    $this->adapter->write($metaPath,$metaString,$config);
-    
     // Write the contents to the adapter
     return $this->adapter->write($path,$writeContents,$config);
   }
