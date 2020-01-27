@@ -1,5 +1,5 @@
 {
-  "name": "dengsn/flysystem-gzip-adapter",
+  "name": "emmetog/flysystem-gzip-adapter",
   "description": "Gzip wrapper for Flysystem instances",
   "authors": [
     {
